@@ -18,8 +18,8 @@ nav:
   # 左侧盒子
   group:
     博客:
-      个人主页: http://121.196.247.213/ || /img/pwa/favicon.ico
-      博客: http://121.196.247.213:26080/ || /img/pwa/favicon.ico
+      个人主页: https://MarK-MkSaMa.github.io/Homepage/ || /img/pwa/favicon.ico
+      博客: https://MarK-MkSaMa.github.io/blog/ || /img/pwa/favicon.ico
   #  project: # name
   #    Solitude: https://github.com/everfu/hexo-theme-solitude || /img/pwa/favicon.ico # name: url || icon
 
