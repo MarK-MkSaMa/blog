@@ -136,7 +136,7 @@ aside:
   # 信息卡
   my_card:
     author:
-      img: http://yoisakikanade.cn:9002/d/alist/Mark's Image/mk.jpg # url
+      img: http://markcup.cc:26002/d/MarK_MkSaMa/Photo/华恋.jpg # url
       sticker: # url, 24x24 size
     # 介绍 / Introduction
     description: 永不言弃，无限进步
@@ -251,7 +251,7 @@ post:
     # 版权
     copyright:
       enable: true
-      author: http://yoisakikanade.cn:9002/d/alist/Mark's Image/mk.jpg # url
+      author: http://markcup.cc:26002/d/MarK_MkSaMa/Photo/华恋.jpg # url
       # License
       # 许可证
       license: CC BY-NC-SA 4.0
@@ -536,7 +536,7 @@ rightside:
 footer:
   # 社交图标
   information:
-    author: http://yoisakikanade.cn:9002/d/alist/Mark's Image/mk.jpg # img url / false
+    author: http://markcup.cc:26002/d/MarK_MkSaMa/Photo/华恋.jpg # img url / false
     left:
       Github: https://github.com/markskz233 || fab fa-github
       BiliBili: https://space.bilibili.com/388153176 || fab fa-bilibili
