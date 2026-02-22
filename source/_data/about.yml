@@ -8,7 +8,7 @@ authorinfo:
     - 独立开发者
     - AI探索者
     - 团队发动机
-  image: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/hualian.jpg
+  image: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/hualian.jpg
 
 # 标题
 title: 关于我
@@ -36,7 +36,7 @@ skills: # 根据需求添加
   tags:
     - title: C++
       color: "#c04c8e"
-      img: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/cpp_logo.png
+      img: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/cpp_logo.png
     - title: JS
       color: "#f7cb4f"
       icon: fab fa-js
@@ -54,10 +54,10 @@ skills: # 根据需求添加
       icon: fab fa-python
     - title: PhotoShop
       color: "#4082c3"
-      img: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/ps_logo.png
+      img: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/ps_logo.png
     - title: Premeire Pro
       color: "#e371ff"
-      img: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/pr_logo.png
+      img: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/pr_logo.png
 
 # 生涯模块
 # 生涯模块和技能图标轮播模块在一行，如不写则技能图标轮播模块单独占满一行。

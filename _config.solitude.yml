@@ -136,7 +136,7 @@ aside:
   # 信息卡
   my_card:
     author:
-      img: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/hualian.jpg # url
+      img: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/hualian.jpg # url
       sticker: # url, 24x24 size
     # 介绍 / Introduction
     description: 永不言弃，无限进步
@@ -252,7 +252,7 @@ post:
     # 版权
     copyright:
       enable: true
-      author: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/hualian.jpg # url
+      author: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/hualian.jpg # url
       # License
       # 许可证
       license: CC BY-NC-SA 4.0
@@ -537,7 +537,7 @@ rightside:
 footer:
   # 社交图标
   information:
-    author: https://markcup.cc:26002/d/MarK_MkSaMa/Photo/hualian.jpg # img url / false
+    author: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/hualian.jpg # img url / false
     left:
       Github: https://github.com/markskz233 || fab fa-github
       BiliBili: https://space.bilibili.com/388153176 || fab fa-bilibili
@@ -613,7 +613,7 @@ errorpage:
 # can only use NetEase Cloud Music, QQ Music and other music platforms supported by the mainland China region,
 # the subsequent consideration of the use of JSON files to store music information and customize the implementation of the third-party API does not depend on the page.
 # Music Page
-meting_api: "https://markcup.cc:26080/meting/api?server=:server&type=:type&id=:id&auth=:auth&r=:r" # Custom API
+meting_api: "https://api.markcup.cc:26080/meting/api?server=:server&type=:type&id=:id&auth=:auth&r=:r" # Custom API
 # --------------------------- end ---------------------------
 
 # --------------------------- start ---------------------------
@@ -845,7 +845,7 @@ comment:
     limit: 5 # 评论数 / Number of comments
 # Twikoo: https://solitude.js.org/comment/twikoo
 twikoo: # https://twikoo.js.org/
-  envId: https://markcup.cc:26080/twikoo # url: https://twikoo.sondy.top/
+  envId: https://api.markcup.cc:26080/twikoo # url: https://twikoo.sondy.top/
   region: # Environment locale, default is ap-shanghai, Tencent cloud environment fill ap-shanghai or ap-guangzhou; Vercel environment do not fill the.
   style: true # Use custom styles when turned on
   accessToken: # AccessToken
