@@ -613,7 +613,7 @@ errorpage:
 # can only use NetEase Cloud Music, QQ Music and other music platforms supported by the mainland China region,
 # the subsequent consideration of the use of JSON files to store music information and customize the implementation of the third-party API does not depend on the page.
 # Music Page
-meting_api: "https://markcup.cc:26080/api?server=:server&type=:type&id=:id&auth=:auth&r=:r" # Custom API
+meting_api: "https://markcup.cc:26080/meting/api?server=:server&type=:type&id=:id&auth=:auth&r=:r" # Custom API
 # --------------------------- end ---------------------------
 
 # --------------------------- start ---------------------------
