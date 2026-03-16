@@ -20,8 +20,9 @@ links:
         topimg: https://s2.loli.net/2025/01/21/RcNxQMy6mfliXtS.png
       - name: 無名の主页
         link: https://www.imsyy.top/
-        avatar: https://www.imsyy.top/images/icon/logo.png
+        avatar: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/imsyyfavicon.ico
         descr: 一个由imsyy开发的主页项目
+        topimg: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/screenshot.png
   - class_name: 小伙伴们
     descr: 来者皆是客
     type: item
