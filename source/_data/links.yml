@@ -1,9 +1,32 @@
 links:
-  - class_name: 友情链接
-    descr: 一些好朋友的博客
+  - class_name: 框架&项目
+    descr: 项目中参考和使用的一些开源项目和框架
+    type: card
+    link_list:
+      - name: Hexo
+        link: https://hexo.io/zh-cn/
+        avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+        descr: 快速、简单且强大的网站框架
+        topimg: https://s2.loli.net/2024/11/10/Zm5dvbLOUMr9iFk.webp
+      - name: 张洪Heo
+        link: https://blog.zhheo.com/
+        avatar: https://img.zhheo.com/i/67d8fa75943e4.webp
+        descr: 分享设计与科技生活
+        topimg: https://img.zhheo.com/i/67d8fb5f563ff.webp
+      - name: Solitude
+        link: https://solitude.js.org/
+        avatar: https://s2.loli.net/2024/10/10/hOTRIKV4vy6EMf2.webp
+        descr: 一个卡片UI主题，适用于 Hexo
+        topimg: https://s2.loli.net/2025/01/21/RcNxQMy6mfliXtS.png
+      - name: 無名の主页
+        link: https://www.imsyy.top/
+        avatar: https://www.imsyy.top/images/icon/logo.png
+        descr: 一个由imsyy开发的主页项目
+  - class_name: 小伙伴们
+    descr: 来者皆是客
     type: item
     link_list:
-      - name: 示例博客
-        link: https://example.com
-        avatar: https://via.placeholder.com/100
-        descr: 这是一个示例友链
+      - name: 周易
+        link: https://blog.blockcorner.top/
+        avatar: https://cloud.markcup.cc:26080/d/zhouyi/zhouyi.png
+        descr: 热爱捣鼓东西的好兄弟
