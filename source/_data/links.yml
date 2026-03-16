@@ -1,0 +1,9 @@
+links:
+  - class_name: 友情链接
+    descr: 一些好朋友的博客
+    type: item
+    link_list:
+      - name: 示例博客
+        link: https://example.com
+        avatar: https://via.placeholder.com/100
+        descr: 这是一个示例友链
