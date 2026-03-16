@@ -122,3 +122,19 @@ algolia:
 abbrlink:
   alg: crc32
   rep: hex
+
+markdown:
+  preset: 'default'
+  render:
+    html: true
+    xhtmlOut: false
+    langPrefix: 'language-'
+    breaks: true
+    linkify: true
+    typographer: false
+  plugins:
+    - '@renbaoshuo/markdown-it-katex'
+  anchors:
+    level: 2
+    collisionSuffix: ''
+    permalink: false
