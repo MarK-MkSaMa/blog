@@ -699,8 +699,8 @@ highlight:
   # default: default / mac : apple terminal
   # default: 默认 / mac : 苹果终端
   theme: mac
-  # default / solidity / dracula
-  color: default
+  # default / solidity / dracula / github-dark
+  color: github-dark
 # --------------------------- end ---------------------------
 
 # --------------------------- start ---------------------------
