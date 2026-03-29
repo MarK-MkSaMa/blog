@@ -80,6 +80,102 @@
       margin 0
       font-size 15px
 
+  .admonition
+    margin 1rem 0
+    border 1px solid var(--style-border)
+    border-left-width 4px
+    border-radius 14px
+    overflow hidden
+    background var(--efu-card-bg)
+    box-shadow var(--efu-shadow-border)
+
+    summary
+      list-style none
+
+      &::-webkit-details-marker
+        display none
+
+    p
+      margin .45rem 0
+      text-align left
+      letter-spacing normal
+
+  .admonition-title
+    display flex
+    align-items center
+    justify-content space-between
+    gap .75rem
+    padding .85rem 1rem
+    cursor pointer
+    user-select none
+    font-size 1rem
+    font-weight 700
+    line-height 1.4
+    transition all .2s ease
+
+    &:hover
+      filter brightness(1.03)
+
+  .admonition-title-main
+    display inline-flex
+    align-items center
+    gap .55rem
+
+    i
+      font-size 1rem
+
+  .admonition-fold-icon
+    font-size .9rem
+    transition transform .2s ease
+
+  .admonition[open]
+    .admonition-fold-icon
+      transform rotate(180deg)
+
+  .admonition-content
+    padding .1rem 1rem .95rem 1rem
+
+    > :first-child
+      margin-top 0
+
+    > :last-child
+      margin-bottom 0
+
+  .admonition.note
+    border-left-color #4493f8
+
+    .admonition-title
+      color #4493f8
+      background linear-gradient(180deg, rgba(68, 147, 248, 0.16), rgba(68, 147, 248, 0.06))
+
+  .admonition.tip
+    border-left-color #3fb950
+
+    .admonition-title
+      color #3fb950
+      background linear-gradient(180deg, rgba(63, 185, 80, 0.16), rgba(63, 185, 80, 0.06))
+
+  .admonition.important
+    border-left-color #ab7df8
+
+    .admonition-title
+      color #ab7df8
+      background linear-gradient(180deg, rgba(171, 125, 248, 0.16), rgba(171, 125, 248, 0.06))
+
+  .admonition.warning
+    border-left-color #d29922
+
+    .admonition-title
+      color #d29922
+      background linear-gradient(180deg, rgba(210, 153, 34, 0.16), rgba(210, 153, 34, 0.06))
+
+  .admonition.caution
+    border-left-color #f85149
+
+    .admonition-title
+      color #f85149
+      background linear-gradient(180deg, rgba(248, 81, 73, 0.16), rgba(248, 81, 73, 0.06))
+
   code:not([class*='language-'])
     color inherit
     font-family inherit
