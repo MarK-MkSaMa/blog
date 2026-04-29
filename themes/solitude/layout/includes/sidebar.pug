@@ -23,11 +23,6 @@ div#sidebar(style="zoom: 1;")
                         a(href=url_for(theme.recent_comments.page))
                             .headline=_p('comment.title')
                             include ./widgets/sidebar/comment
-        span.sidebar-menu-item-title= __('sidebar.function')
-        div.sidebar-menu-item
-            span.darkmode_switchbutton.menu-child(onclick="sco.switchDarkMode()")
-                i.solitude.fas.fa-circle-half-stroke
-                span= __('sidebar.darkmode')
         include ./widgets/nav/group
         include ./widgets/nav/menu.pug
         span.sidebar-menu-item-title= __('page.tag')

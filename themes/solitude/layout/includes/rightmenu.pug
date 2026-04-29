@@ -61,14 +61,6 @@ div#rightMenu
             div.rightMenu-item#menu-commentBarrage(onclick="sco.switchCommentBarrage()")
                 i.solitude.fas.fa-comment
                 span.menu-commentBarrage-text= _p('right_menu.barrage.close')
-        div.rightMenu-item#menu-darkmode(onclick="sco.switchDarkMode()")
-            i.solitude.fas.fa-circle-half-stroke
-            case theme.display_mode.type
-                when 'auto'
-                when 'light'
-                    span.menu-darkmode-text= _p('right_menu.light')
-                when 'dark'
-                    span.menu-darkmode-text= _p('right_menu.dark')
         if theme.right_menu.translate
             div.rightMenu-item#menu-translate
                 i.solitude.fas.fa-language
