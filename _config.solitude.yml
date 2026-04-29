@@ -32,7 +32,7 @@ nav:
       全部分类: /categories/ || fas fa-clone
       全部标签: /tags/ || fas fa-tags
     其他:
-      每日随笔: /essay/ || fas fa-pen-nib
+      朋友圈: /essay/ || fas fa-pen-nib
       音乐馆: /music/ || fas fa-music
     友链:
       友情链接: /links/ || fas fa-user-group

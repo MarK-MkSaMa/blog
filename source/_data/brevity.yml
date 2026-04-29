@@ -1,33 +1,5 @@
-- content: 这是我的第一篇短文
-  date: 2025-09-29 8:32
-# - content: 普通文字短文
-#   date: 2025-01-01 00:00
-# - content: B站视频短文
-#   date: 2025-01-01 00:00
-#   video:
-#     bilibili: BV1AH4y1p7mF # 填写视频bvid
-# - content: 外链视频短文
-#   date: 2025-01-01 00:00
-#   video:
-#     player: 视频直链
-# - content: 音乐短文
-#  date: 2025-01-01 00:00
-#  aplayer:
-#     server: netease # 音乐服务商，如netease
-#     id: 1426724753 # 单曲id，不了解具体查看方法建议询问搜索引擎
-# - content: 图片短文（无图片描述）
-#   date: 2025-01-01 00:00
-#   image:
-#     - https://bu.dusays.com/2025/08/12/689a2b8c80875.png
-#     - https://bu.dusays.com/2025/08/12/689a2b8c80875.png
-# - content: 图片短文（有图片描述）
-#   date: 2025-01-01 00:00
-#   image:
-#     - url: https://bu.dusays.com/2025/08/12/689a2b8c80875.png
-#       alt: 占位图
-# - content: 链接短文
-#   date: 2025-01-01 00:00
-#   link: 链接
-# - content: 地点短文
-#   date: 2025-01-01 00:00
-#   location: 发布地点
+# 朋友圈数据已迁移到 source/_essays/ 目录
+# 每条朋友圈 = 一个 markdown 文件，文件名即 id（YYYYMMDD-序号）
+# 数据由 scripts/brevity-pages.js 在构建时注入到 site.data.brevity
+# 此文件保留为空数组，避免 Hexo 报错
+[]
