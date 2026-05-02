@@ -351,11 +351,8 @@ if hexo-config('brevity.enable')
       .tk-action .tk-action-link:first-child
         display none !important
 
-      // 隐藏 Powered by Twikoo（footer 整块 + 兜底链接）
-      .tk-footer,
-      a[href*="twikoo"],
-      .tk-power,
-      .tk-poweredby
+      // 隐藏 Powered by Twikoo（footer 整块，无视短暂闪现）
+      .tk-footer
         display none !important
 
       // 评论正文 / 昵称 / 时间 字号收紧

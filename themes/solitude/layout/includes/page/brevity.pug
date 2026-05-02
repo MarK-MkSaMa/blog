@@ -119,21 +119,10 @@ if theme.brevity.enable
           });
         }
 
-        // 移除 Powered by Twikoo：先干掉 .tk-footer，再兜底匹配链接 / 文本
+        // 移除 Powered by Twikoo：直接干掉 .tk-footer 整块
         function stripPowerBy(wrap) {
           if (!wrap) return;
           wrap.querySelectorAll('.tk-footer').forEach(el => el.remove());
-          wrap.querySelectorAll('a').forEach(a => {
-            const txt = (a.textContent || '').trim().toLowerCase();
-            const href = (a.href || '').toLowerCase();
-            if (href.includes('twikoo') || txt.includes('powered by') || txt === 'twikoo') {
-              const parent = a.parentElement;
-              a.remove();
-              if (parent && /^[\s,·|·-]*powered by[\s,·|·-]*$/i.test((parent.textContent || '').trim())) {
-                parent.remove();
-              }
-            }
-          });
         }
 
         // 进入视口时懒加载 Twikoo
