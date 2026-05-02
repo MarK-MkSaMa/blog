@@ -321,6 +321,55 @@ if hexo-config('brevity.enable')
       &:not(.show-input) .tk-comments > *:not(.tk-comments-container)
         display none
 
+      // 评论显示精简
+      font-size .82rem
+
+      // 隐藏头像
+      .tk-avatar,
+      img.tk-avatar-img
+        display none !important
+
+      .tk-meta,
+      .tk-content
+        margin-left 0 !important
+        padding-left 0 !important
+
+      // 隐藏设备 / 浏览器 / 标签
+      .tk-extras,
+      .tk-extra,
+      .tk-tag,
+      .tk-tag-green,
+      .tk-tag-yellow,
+      .tk-tag-red
+        display none !important
+
+      // 隐藏 Twikoo 评论数标题（已在 💬 按钮显示）
+      .tk-comments-title
+        display none !important
+
+      // 隐藏齿轮（管理员入口 / 私密评论触发）
+      .tk-action .tk-action-link:first-child
+        display none !important
+
+      // 隐藏 Powered by Twikoo 链接
+      a[href*="twikoo"],
+      .tk-power,
+      .tk-poweredby
+        display none !important
+
+      // 评论正文 / 昵称 / 时间 字号收紧
+      .tk-content,
+      .tk-content p
+        font-size .82rem !important
+        line-height 1.6 !important
+
+      .tk-nick
+        font-size .85rem !important
+        line-height 1.4 !important
+
+      .tk-time
+        font-size .68rem !important
+
     +maxWidth768()
       .brevity-item
         padding .85rem 1rem
