@@ -119,16 +119,16 @@ if theme.brevity.enable
           });
         }
 
-        // 移除 Powered by Twikoo 字样（按文本和链接双重匹配）
+        // 移除 Powered by Twikoo：先干掉 .tk-footer，再兜底匹配链接 / 文本
         function stripPowerBy(wrap) {
           if (!wrap) return;
+          wrap.querySelectorAll('.tk-footer').forEach(el => el.remove());
           wrap.querySelectorAll('a').forEach(a => {
             const txt = (a.textContent || '').trim().toLowerCase();
             const href = (a.href || '').toLowerCase();
             if (href.includes('twikoo') || txt.includes('powered by') || txt === 'twikoo') {
               const parent = a.parentElement;
               a.remove();
-              // 若父元素仅剩"Powered by"残文，也移除
               if (parent && /^[\s,·|·-]*powered by[\s,·|·-]*$/i.test((parent.textContent || '').trim())) {
                 parent.remove();
               }
