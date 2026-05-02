@@ -17,7 +17,7 @@ if theme.brevity.enable
       section.brevity-list
         each item in sliced
           - var permalink = url_for('essay/' + item.id + '/')
-          article.brevity-item(data-id=item.id)
+          article.brevity-item(data-id=item.id data-path=permalink)
             .brevity-body
               if item.content
                 p.brevity-text= item.content
@@ -56,7 +56,7 @@ if theme.brevity.enable
                   span.brevity-location
                     i.solitude.fas.fa-location-dot
                     = ' ' + item.location
-              button.brevity-toggle(type='button' aria-expanded='false' onclick=`toggleBrevityComments(this, '${permalink}')`)
+              button.brevity-jump(type='button' onclick='jumpToBrevityComments(this)')
                 i.solitude.fas.fa-comment
                 span.brevity-comment-count(data-path=permalink)
 
@@ -96,28 +96,43 @@ if theme.brevity.enable
 
         ensureTwikoo().then(fillCounts);
 
-        window.toggleBrevityComments = function (btn, path) {
-          const item = btn.closest('.brevity-item');
+        function initCommentsFor(item) {
+          const path = item.dataset.path;
+          if (!path || inited.has(path)) return;
+          inited.add(path);
           const wrap = item.querySelector('.brevity-comments');
           const host = wrap.querySelector('.brevity-comment-host');
-          const expanded = !wrap.hasAttribute('hidden');
-          if (expanded) {
-            wrap.setAttribute('hidden', '');
-            btn.setAttribute('aria-expanded', 'false');
-            return;
-          }
           wrap.removeAttribute('hidden');
-          btn.setAttribute('aria-expanded', 'true');
-          if (!inited.has(path)) {
-            inited.add(path);
-            ensureTwikoo().then(() => {
-              twikoo.init(Object.assign({
-                el: '#' + host.id,
-                envId: ENV_ID,
-                region: REGION,
-                path: path
-              }, EXTRA));
+          ensureTwikoo().then(() => {
+            twikoo.init(Object.assign({
+              el: '#' + host.id,
+              envId: ENV_ID,
+              region: REGION,
+              path: path
+            }, EXTRA));
+          });
+        }
+
+        // 进入视口时懒加载 Twikoo
+        if ('IntersectionObserver' in window) {
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                initCommentsFor(e.target);
+                obs.unobserve(e.target);
+              }
             });
-          }
+          }, { rootMargin: '300px 0px' });
+          document.querySelectorAll('.brevity-item').forEach(it => obs.observe(it));
+        } else {
+          document.querySelectorAll('.brevity-item').forEach(initCommentsFor);
+        }
+
+        // 点 💬 按钮：未 init 则立即 init，并平滑滚到评论区
+        window.jumpToBrevityComments = function (btn) {
+          const item = btn.closest('.brevity-item');
+          initCommentsFor(item);
+          const wrap = item.querySelector('.brevity-comments');
+          setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 150);
         };
       })();
