@@ -18,6 +18,9 @@ if theme.brevity.enable
         each item in sliced
           - var permalink = url_for('essay/' + item.id + '/')
           article.brevity-item(data-id=item.id data-path=permalink)
+            header.brevity-header
+              img.brevity-avatar(src=theme.aside.my_card.author.img alt=config.author)
+              span.brevity-author= config.author
             .brevity-body
               if item.content
                 p.brevity-text= item.content
