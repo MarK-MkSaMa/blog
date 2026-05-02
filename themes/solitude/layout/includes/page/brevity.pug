@@ -111,8 +111,28 @@ if theme.brevity.enable
               el: '#' + host.id,
               envId: ENV_ID,
               region: REGION,
-              path: path
+              path: path,
+              onCommentLoaded: () => stripPowerBy(wrap)
             }, EXTRA));
+            // 多次尝试，应付 Twikoo 异步插入
+            [200, 800, 2000].forEach(t => setTimeout(() => stripPowerBy(wrap), t));
+          });
+        }
+
+        // 移除 Powered by Twikoo 字样（按文本和链接双重匹配）
+        function stripPowerBy(wrap) {
+          if (!wrap) return;
+          wrap.querySelectorAll('a').forEach(a => {
+            const txt = (a.textContent || '').trim().toLowerCase();
+            const href = (a.href || '').toLowerCase();
+            if (href.includes('twikoo') || txt.includes('powered by') || txt === 'twikoo') {
+              const parent = a.parentElement;
+              a.remove();
+              // 若父元素仅剩"Powered by"残文，也移除
+              if (parent && /^[\s,·|·-]*powered by[\s,·|·-]*$/i.test((parent.textContent || '').trim())) {
+                parent.remove();
+              }
+            }
           });
         }
 
