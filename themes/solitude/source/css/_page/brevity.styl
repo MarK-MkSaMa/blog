@@ -294,9 +294,11 @@ if hexo-config('brevity.enable')
       .brevity-comment-host
         min-height 40px
 
-      // 默认隐藏输入栏（Twikoo 输入区 = tk-comments-container 中除 tk-comments 外的所有直接子元素）
+      // 默认隐藏输入表单
+      // Twikoo 结构：.tk-comments > [输入表单, .tk-comments-container（列表）]
+      // 隐藏 .tk-comments 的直接子元素中 不是 列表（.tk-comments-container）的全部
       // 点击 💬 → 切换 .show-input 类 → 输入栏才出现
-      &:not(.show-input) .tk-comments-container > *:not(.tk-comments)
+      &:not(.show-input) .tk-comments > *:not(.tk-comments-container)
         display none
 
     +maxWidth768()
