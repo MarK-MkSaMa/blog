@@ -368,6 +368,30 @@ if hexo-config('brevity.enable')
       .tk-time
         font-size .68rem !important
 
+      // 评论项不单独成卡（覆盖 Solitude 默认的 border + 阴影 + 大 padding）
+      // 所有评论共用 .brevity-comments 的灰底背景
+      .tk-comments-container > .tk-comment
+        background transparent !important
+        border none !important
+        box-shadow none !important
+        border-radius 0 !important
+        padding .45rem 0 !important
+        margin 0 !important
+        border-top 1px dashed var(--efu-theme-op) !important
+
+      .tk-comments-container > .tk-comment:first-child
+        border-top none !important
+        padding-top 0 !important
+
+      // 嵌套回复也去除卡片样式
+      .tk-replies > .tk-comment
+        background transparent !important
+        border none !important
+        box-shadow none !important
+        border-radius 0 !important
+        padding .3rem 0 0 .8rem !important
+        margin 0 !important
+
     +maxWidth768()
       .brevity-item
         padding .85rem 1rem
