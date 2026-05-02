@@ -128,11 +128,19 @@ if theme.brevity.enable
           document.querySelectorAll('.brevity-item').forEach(initCommentsFor);
         }
 
-        // 点 💬 按钮：未 init 则立即 init，并平滑滚到评论区
+        // 点 💬 按钮：触发 init（若需要）并切换输入栏显示
         window.jumpToBrevityComments = function (btn) {
           const item = btn.closest('.brevity-item');
           initCommentsFor(item);
           const wrap = item.querySelector('.brevity-comments');
-          setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 150);
+          const showing = wrap.classList.toggle('show-input');
+          btn.classList.toggle('is-active', showing);
+          if (showing) {
+            setTimeout(() => {
+              const ta = wrap.querySelector('.el-textarea__inner, textarea');
+              if (ta && ta.focus) ta.focus();
+              wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 200);
+          }
         };
       })();

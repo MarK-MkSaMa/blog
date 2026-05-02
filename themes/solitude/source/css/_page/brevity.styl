@@ -272,6 +272,10 @@ if hexo-config('brevity.enable')
         background var(--efu-gray-op)
         color var(--efu-fontcolor)
 
+      &.is-active
+        background var(--efu-main)
+        color var(--efu-white)
+
       i
         font-size .82rem
 
@@ -289,6 +293,11 @@ if hexo-config('brevity.enable')
 
       .brevity-comment-host
         min-height 40px
+
+      // 默认隐藏输入栏（Twikoo 输入区 = tk-comments-container 中除 tk-comments 外的所有直接子元素）
+      // 点击 💬 → 切换 .show-input 类 → 输入栏才出现
+      &:not(.show-input) .tk-comments-container > *:not(.tk-comments)
+        display none
 
     +maxWidth768()
       .brevity-item
