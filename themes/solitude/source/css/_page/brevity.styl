@@ -304,7 +304,7 @@ if hexo-config('brevity.enable')
 
     .brevity-comments
       margin-top .8rem
-      padding .85rem 1rem
+      padding .4rem .9rem
       background var(--efu-secondbg)
       border-radius 10px
 
@@ -312,7 +312,18 @@ if hexo-config('brevity.enable')
         display none
 
       .brevity-comment-host
-        min-height 40px
+        min-height 0
+
+      // 取消 Twikoo 容器自带的 padding/margin，避免上下出现大空白
+      .tk-comments-container
+        padding 0 !important
+        margin 0 !important
+        min-height 0 !important
+
+      // 最后一条评论去掉 margin-bottom（Solitude 默认给 .5rem）
+      .tk-comments-container > .tk-comment:last-child
+        margin-bottom 0 !important
+        padding-bottom 0 !important
 
       // 默认隐藏输入表单
       // Twikoo 结构：.tk-comments > [输入表单, .tk-comments-container（列表）]
