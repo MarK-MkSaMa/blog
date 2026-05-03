@@ -13,3 +13,7 @@
                 a.banner-button(onclick=isInternalLink ? `pjax.loadUrl("${page.rightbtnlink}")`: null, href=isInternalLink ? null : url_for(page.rightbtnlink), target=isInternalLink ? null : "_blank")
                     i.solitude.fas.fa-circle-chevron-right
                     span.banner-button-text= page.rightbtn
+    if page.type === 'brevity'
+        .brevity-banner-profile
+            span.brevity-banner-name= config.author
+            img.brevity-banner-avatar(src=theme.aside.my_card.author.img alt=config.author)

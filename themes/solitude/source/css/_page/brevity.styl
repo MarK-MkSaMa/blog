@@ -89,6 +89,47 @@ if hexo-config('brevity.home_mini')
         transition .3s
 
 if hexo-config('brevity.enable')
+  // banner 右下角名字 + 头像（仿微信朋友圈封面页）
+  .author-content.sharePage
+    position relative
+
+  .brevity-banner-profile
+    position absolute
+    right 1.5rem
+    bottom 1rem
+    display flex
+    align-items center
+    gap .8rem
+    z-index 2
+    pointer-events none
+
+  .brevity-banner-name
+    font-size 1.25rem
+    font-weight 600
+    color #fff
+    text-shadow 0 1px 4px rgba(0, 0, 0, .55)
+    letter-spacing .02em
+
+  .brevity-banner-avatar
+    width 64px
+    height 64px
+    border-radius 8px
+    object-fit cover
+    box-shadow 0 2px 12px rgba(0, 0, 0, .4)
+
+  +maxWidth768()
+    .brevity-banner-profile
+      right 1rem
+      bottom .8rem
+      gap .55rem
+
+    .brevity-banner-name
+      font-size 1rem
+
+    .brevity-banner-avatar
+      width 48px
+      height 48px
+
   #bber.brevity-feed
     max-width 640px
     margin 0 auto
