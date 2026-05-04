@@ -225,8 +225,8 @@
 
   .cat-post-cover
     flex-shrink 0
-    width 110px
-    height 110px
+    width 200px
+    height 130px
     border-radius 10px
     overflow hidden
     background var(--efu-gray-op)
@@ -238,8 +238,12 @@
       display block
       transition transform .3s
 
+    +maxWidth1300()
+      width 180px
+      height 115px
+
     +maxWidth768()
-      width 90px
+      width 140px
       height 90px
 
   .cat-post-row:hover .cat-post-cover img
