@@ -202,6 +202,7 @@
     border var(--style-border-always)
     border-radius 12px
     overflow hidden
+    min-height 100px
     transition border .25s, box-shadow .25s
 
     &:hover
@@ -211,25 +212,36 @@
     &.is-hidden
       display none
 
+    +maxWidth768()
+      min-height 0
+
   .cat-post-link
     display flex
     align-items stretch
-    gap 1rem
-    padding 1rem
+    gap 0
+    padding 0
     color inherit
     text-decoration none
+    height 100%
 
     +maxWidth768()
-      gap .8rem
-      padding .8rem
+      flex-direction column
 
+  // 横向矩形封面：宽度按 % 占比，高度跟随行高自动拉伸（避免下方黑边）
   .cat-post-cover
-    flex-shrink 0
-    width 200px
-    height 130px
-    border-radius 10px
+    flex 0 0 38%
+    align-self stretch
     overflow hidden
     background var(--efu-gray-op)
+
+    +maxWidth1300()
+      flex 0 0 40%
+
+    +maxWidth768()
+      flex 0 0 auto
+      width 100%
+      height 140px
+      align-self auto
 
     img
       width 100%
@@ -238,23 +250,21 @@
       display block
       transition transform .3s
 
-    +maxWidth1300()
-      width 180px
-      height 115px
-
-    +maxWidth768()
-      width 140px
-      height 90px
-
   .cat-post-row:hover .cat-post-cover img
     transform scale(1.04)
 
   .cat-post-info
-    flex 1
+    flex 1 1 100%
     min-width 0
+    padding .7rem 1.2rem
     display flex
     flex-direction column
-    gap .35rem
+    gap .3rem
+    justify-content center
+
+    +maxWidth768()
+      padding .8rem 1rem
+      gap .3rem
 
   .cat-post-title
     margin 0
