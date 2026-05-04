@@ -1,114 +1,249 @@
-#category
-  #category-bar
-    padding .4rem .6rem
-    border none
-    height auto
-    border var(--style-border)
-    box-shadow none
+// ============================================================
+// 分类页 — 双栏：左侧分类树 / 右侧文章列表
+// ============================================================
+
+#categories-page
+  display grid
+  grid-template-columns 220px 1fr
+  gap 1.5rem
+  width 100%
+  align-items start
+
+  +maxWidth768()
+    grid-template-columns 1fr
+    gap 1rem
+
+  // ---------- 左：分类树侧栏 ----------
+  .cat-sidebar
+    position sticky
+    top 5rem
+    background var(--efu-card-bg)
+    border var(--style-border-always)
+    border-radius 12px
+    padding .9rem .6rem
+    max-height calc(100vh - 6rem)
+    overflow-y auto
 
     +maxWidth768()
-      border-radius 0
-      background var(--efu-background)
-      position -webkit-sticky
-      position sticky
-      z-index 1
-      padding 0
-      height 50px
-      margin-top 0
-      align-items center
+      position static
+      max-height none
 
-#page
-  .category-lists
-    padding 1rem 0 1.5rem
+  .cat-sidebar-header
+    font-size .8rem
+    color var(--efu-secondtext)
+    padding 0 .6rem .5rem
+    letter-spacing .1em
+    text-transform uppercase
+
+  .cat-tree-link
+    display flex
+    align-items center
+    gap .5rem
+    padding .45rem .85rem
+    border-radius 8px
+    color var(--efu-fontcolor)
+    font-size .9rem
+    text-decoration none
+    transition background .2s, color .2s
+
+    &:hover
+      background var(--efu-gray-op)
+      color var(--efu-main)
+
+    &.is-current
+      background var(--efu-main)
+      color #fff
+
+      .cat-tree-count
+        background rgba(255, 255, 255, .25)
+        color #fff
+
+    &.is-ancestor
+      color var(--efu-main)
+      font-weight 600
+
+    i
+      font-size .8rem
+      flex-shrink 0
+
+    .cat-tree-name
+      flex 1
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+
+    .cat-tree-count
+      font-size .72rem
+      padding 1px 7px
+      border-radius 99px
+      background var(--efu-gray-op)
+      color var(--efu-secondtext)
+      font-weight 500
+
+  .cat-tree-divider
+    height 1px
+    background var(--style-border-always-color, rgba(125, 125, 125, .15))
+    margin .55rem .6rem
+
+  // ---------- 右：主内容区 ----------
+  .cat-main
+    min-width 0
+
+  .cat-breadcrumb
+    display flex
+    align-items center
+    gap .35rem
+    font-size .8rem
+    color var(--efu-secondtext)
+    margin-bottom .7rem
+    flex-wrap wrap
+
+    a
+      color var(--efu-secondtext)
+      text-decoration none
+      transition color .2s
+
+      &:hover
+        color var(--efu-main)
+
+    .cat-bc-sep
+      opacity .5
+
+  .cat-header
+    margin-bottom 1.2rem
+    padding-bottom .9rem
+    border-bottom 1px dashed var(--efu-theme-op)
+
+  .cat-title
+    margin 0 0 .35rem
+    font-size 1.6rem
+    font-weight 700
+    color var(--efu-fontcolor)
+
+  .cat-meta
+    margin 0
+    font-size .85rem
+    color var(--efu-secondtext)
+
+  .cat-empty
+    text-align center
+    padding 4rem 1rem
+    color var(--efu-secondtext)
+
+    i
+      display block
+      font-size 2.5rem
+      opacity .35
+      margin-bottom .8rem
+
+    p
+      margin 0
+      font-size .9rem
+
+  // ---------- 文章卡片 ----------
+  .cat-post-list
+    list-style none
+    margin 0
+    padding 0
+    display flex
+    flex-direction column
+    gap .8rem
+
+  .cat-post-row
+    background var(--efu-card-bg)
+    border var(--style-border-always)
+    border-radius 12px
+    overflow hidden
+    transition border .25s, box-shadow .25s
+
+    &:hover
+      border var(--style-border-hover)
+      box-shadow var(--efu-shadow-border)
+
+  .cat-post-link
+    display flex
+    align-items stretch
+    gap 1rem
+    padding 1rem
+    color inherit
+    text-decoration none
 
     +maxWidth768()
-      padding 0
+      gap .8rem
+      padding .8rem
 
-    ul
-      display flex
-      flex-wrap wrap
-      flex-direction row
-      margin-top .4rem
-      padding 0 0 0 1rem
-      list-style none
-      counter-reset li 0
+  .cat-post-cover
+    flex-shrink 0
+    width 110px
+    height 110px
+    border-radius 10px
+    overflow hidden
+    background var(--efu-gray-op)
 
-      ul
-        padding-left .2rem
+    img
+      width 100%
+      height 100%
+      object-fit cover
+      display block
+      transition transform .3s
 
-      li
-        position relative
-        margin .3rem 0
-        padding 4px 16px
-        width 200px
-        border-radius 12px
-        background var(--efu-card-bg)
-        border var(--style-border-always)
+    +maxWidth768()
+      width 90px
+      height 90px
 
-        &::before
-          display none
-          position absolute
-          left 0
-          cursor pointer
-          transition all .3s ease-out 0s
-          top .7em
-          width .43em
-          height .43em
-          border .215em solid #307af6
-          border-radius .43em
-          background 0 0
-          content ""
+  .cat-post-row:hover .cat-post-cover img
+    transform scale(1.04)
 
-        &:hover::before
-          border-color #ff7242
+  .cat-post-info
+    flex 1
+    min-width 0
+    display flex
+    flex-direction column
+    gap .35rem
 
-    .category-title
-      font-size 2.57em
+  .cat-post-title
+    margin 0
+    font-size 1.05rem
+    font-weight 600
+    color var(--efu-fontcolor)
+    line-height 1.4
+    overflow hidden
+    text-overflow ellipsis
+    display -webkit-box
+    -webkit-line-clamp 2
+    -webkit-box-orient vertical
 
-      +maxWidth768()
-        font-size 2em
+    +maxWidth768()
+      font-size .95rem
 
-    .tag-cloud-list
-      gap 1rem
-      a
-        display flex
-        width fit-content
-        color var(--efu-fontcolor)
-        font-size 1.4em
-        padding 0.2em 0.5em
-        background var(--efu-card-bg)
-        border-radius 12px
-        border var(--style-border-always)
-        box-shadow var(--efu-shadow-border)
-        align-items center
-        transition all .3s ease 0s
+  .cat-post-cats
+    display inline-flex
+    align-items center
+    gap .25rem
+    font-size .76rem
+    color var(--efu-main)
+    flex-wrap wrap
 
-        +maxWidth768()
-          zoom .85
+    .cat-post-cat
+      font-weight 500
 
-        span.tags-punctuation
-          transition none
+    .cat-post-cat-sep
+      opacity .55
 
-        &:hover
-          background var(--efu-main) !important
-          box-shadow var(--efu-shadow-blue)
-          color var(--efu-white) !important
-          border var(--style-border-hover)
+  .cat-post-tags
+    display flex
+    flex-wrap wrap
+    gap .35rem
 
-          span.tagsPageCount
-            color var(--efu-lighttext)
+    .cat-post-tag
+      font-size .72rem
+      padding 1px 8px
+      border-radius 99px
+      background var(--efu-gray-op)
+      color var(--efu-secondtext)
 
-          span.tags-punctuation
-            color inherit
-
-span.tagsPageCount
-  background var(--efu-secondbg)
-  padding 4px 4px
-  border-radius 8px
-  color var(--efu-secondtext)
-  line-height 1
-  text-align center
-  min-width 35px
-  display inline-block
-  font-size 1rem
-  margin-left 4px
+  .cat-post-date
+    margin-top auto
+    font-size .72rem
+    color var(--efu-secondtext)
+    opacity .85

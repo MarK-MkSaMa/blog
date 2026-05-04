@@ -1,9 +1,76 @@
-h1.page-title= _p('page.category')
-.category-lists
-    .tag-cloud-list.is-center
-        each item in site.categories.find({ parent: { $exists: false } }).data
-            a(href=url_for(item.path))
-                span.tags-punctuation
-                    i.solitude.fas.fa-hashtag
-                    = item.name
-                    span.tagsPageCount= item.length
+//- 分类页 — 双栏：左侧分类树 / 右侧文章列表
+//- 数据来源：scripts/categories-pages.js 注入的 page.category_*
+- var tree = page.category_tree || []
+- var chain = page.category_chain || []
+- var current = page.category_node
+- var posts = page.category_posts || []
+- var total = page.category_total || 0
+
+//- 把"祖先链"摊成 id 集合，用于判断节点是否在当前路径上
+- var chainIds = chain.map(function(c){ return c.id })
+
+mixin renderTreeNode(node, depth)
+  - var inChain = chainIds.indexOf(node.id) !== -1
+  - var isCurrent = current && current.id === node.id
+  - var cls = ['cat-tree-link']
+  - if (isCurrent) cls.push('is-current')
+  - if (inChain && !isCurrent) cls.push('is-ancestor')
+  a(href=url_for(node.path), class=cls.join(' '), style='padding-left:' + (0.85 + depth * 1.1) + 'rem')
+    span.cat-tree-name= node.name
+    span.cat-tree-count= node.totalLength
+  if inChain && node.children && node.children.length
+    each child in node.children
+      +renderTreeNode(child, depth + 1)
+
+#categories-page
+  //- 左：分类树
+  aside.cat-sidebar
+    .cat-sidebar-header= __('page.category')
+    a.cat-tree-link.cat-tree-all(href=url_for('categories/'), class=(!current ? 'is-current' : ''))
+      i.solitude.fas.fa-list
+      span.cat-tree-name 全部
+      span.cat-tree-count= site.posts.length
+    .cat-tree-divider
+    each root in tree
+      +renderTreeNode(root, 0)
+
+  //- 右：文章列表
+  main.cat-main
+    nav.cat-breadcrumb
+      a(href=url_for('categories/')) 全部分类
+      each c in chain
+        span.cat-bc-sep ›
+        a(href=url_for(c.path))= c.name
+
+    header.cat-header
+      h1.cat-title= current ? current.name : '全部分类'
+      p.cat-meta 共 #{total} 篇文章
+
+    if posts.length === 0
+      .cat-empty
+        i.solitude.fas.fa-inbox
+        p 这里还没有文章
+    else
+      ul.cat-post-list
+        each post in posts
+          - var cats = (post.categories && post.categories.toArray) ? post.categories.toArray() : []
+          - var tags = (post.tags && post.tags.toArray) ? post.tags.toArray() : []
+          - var coverSrc = post.cover || url_for('/img/default.avif')
+          li.cat-post-row
+            a.cat-post-link(href=url_for(post.path))
+              .cat-post-cover
+                img(src=coverSrc, alt=post.title, loading='lazy', onerror=`this.src='${url_for('/img/default.avif')}'`)
+              .cat-post-info
+                h3.cat-post-title= post.title
+                if cats.length
+                  .cat-post-cats
+                    each cat, idx in cats
+                      if idx > 0
+                        span.cat-post-cat-sep ›
+                      span.cat-post-cat= cat.name
+                if tags.length
+                  .cat-post-tags
+                    each tag in tags.slice(0, 4)
+                      span.cat-post-tag= '#' + tag.name
+                time.cat-post-date(datetime=moment(post.date).format())
+                  = moment(post.date).format('YYYY-MM-DD')

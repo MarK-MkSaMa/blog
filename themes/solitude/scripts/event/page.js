@@ -20,14 +20,15 @@ hexo.extend.generator.register('tags', function(locals) {
     }
   };
 });
-hexo.extend.generator.register('categories', function(locals) {
-  if(!this.theme.config.page.categories)return
-  return {
-    path: 'categories/index.html',
-    layout: ['page'],
-    data: {
-      type: 'categories',
-      comment: false,
-    }
-  };
-});
+// 已被 scripts/categories-pages.js 取代（自定义双栏 + 嵌套）
+// hexo.extend.generator.register('categories', function(locals) {
+//   if(!this.theme.config.page.categories)return
+//   return {
+//     path: 'categories/index.html',
+//     layout: ['page'],
+//     data: {
+//       type: 'categories',
+//       comment: false,
+//     }
+//   };
+// });
