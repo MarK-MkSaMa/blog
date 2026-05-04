@@ -59,9 +59,12 @@ if theme.brevity.enable
                   span.brevity-location
                     i.solitude.fas.fa-location-dot
                     = ' ' + item.location
-              button.brevity-jump(type='button' onclick='jumpToBrevityComments(this)')
-                i.solitude.fas.fa-comment
-                span.brevity-comment-count(data-path=permalink)
+              .brevity-actions
+                button.brevity-share(type='button' onclick='shareBrevityCard(this)' aria-label='分享为图片')
+                  i.solitude.fas.fa-image
+                button.brevity-jump(type='button' onclick='jumpToBrevityComments(this)')
+                  i.solitude.fas.fa-comment
+                  span.brevity-comment-count(data-path=permalink)
 
             - var hostId = 'twikoo-' + item.id
             .brevity-comments(hidden)
@@ -69,6 +72,43 @@ if theme.brevity.enable
 
       if stripCount !== -1 && feed.length > stripCount
         #bber-tips= _p('essay.tip1').replace('#{count}', stripCount)
+
+    //- 分享卡片模板（隐藏，js 填数据后用 html2canvas 截图）
+    #brevityShareTemplate(aria-hidden='true')
+      .share-card
+        header.share-brand
+          img.share-logo(src=url_for(theme.site.icon) crossorigin='anonymous')
+          span.share-blogname= config.title
+        .share-author-row
+          img.share-avatar(src=theme.aside.my_card.author.img alt=config.author crossorigin='anonymous')
+          .share-author-info
+            span.share-name= config.author
+            span.share-date
+        .share-divider
+        .share-content
+        .share-divider
+        footer.share-footer
+          .share-meta
+          .share-qr-row
+            .share-qr
+            .share-qr-desc
+              span 扫码查看完整动态
+              span.share-qr-domain= (config.url || '').replace(/^https?:\/\//, '')
+
+    //- 分享预览模态框
+    #brevityShareModal(hidden)
+      .brevity-share-mask(onclick='closeBrevityShareModal()')
+      .brevity-share-window
+        .brevity-share-loading
+          i.solitude.fas.fa-spinner.fa-spin
+          span 正在生成分享图…
+        .brevity-share-result(hidden)
+          img.brevity-share-img(alt='分享图')
+          .brevity-share-tips
+            | PC：右键图片 → 另存为；手机：长按图片保存
+          .brevity-share-actions
+            a.brevity-share-save(download='moments-share.png') 保存图片
+            button.brevity-share-close(type='button' onclick='closeBrevityShareModal()') 关闭
 
     script.
       (function () {
@@ -154,5 +194,87 @@ if theme.brevity.enable
               wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 200);
           }
+        };
+
+        // ============== 分享卡片 ==============
+        const HTML2CANVAS_CDN = 'https://fastly.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+
+        function ensureHtml2Canvas() {
+          if (typeof html2canvas === 'function') return Promise.resolve();
+          return utils.getScript(HTML2CANVAS_CDN);
+        }
+
+        window.shareBrevityCard = function (btn) {
+          const item = btn.closest('.brevity-item');
+          const tpl = document.getElementById('brevityShareTemplate');
+          const modal = document.getElementById('brevityShareModal');
+          const loading = modal.querySelector('.brevity-share-loading');
+          const result = modal.querySelector('.brevity-share-result');
+          const imgEl = modal.querySelector('.brevity-share-img');
+          const saveLink = modal.querySelector('.brevity-share-save');
+
+          // 显示模态框 + loading
+          modal.removeAttribute('hidden');
+          loading.removeAttribute('hidden');
+          result.setAttribute('hidden', '');
+
+          // 填充模板数据
+          tpl.querySelector('.share-date').textContent =
+            item.querySelector('.brevity-date')?.textContent || '';
+          tpl.querySelector('.share-content').innerHTML = '';
+          const text = item.querySelector('.brevity-text');
+          if (text) {
+            const p = document.createElement('p');
+            p.className = 'share-text';
+            p.textContent = text.textContent;
+            tpl.querySelector('.share-content').appendChild(p);
+          }
+          const imgs = item.querySelectorAll('.brevity-images img');
+          if (imgs.length) {
+            const grid = document.createElement('div');
+            grid.className = 'share-images g' + (imgs.length === 1 ? '1' : imgs.length === 2 ? '2' : imgs.length <= 4 ? '4' : '9');
+            imgs.forEach(im => {
+              const clone = im.cloneNode(false);
+              clone.setAttribute('crossorigin', 'anonymous');
+              grid.appendChild(clone);
+            });
+            tpl.querySelector('.share-content').appendChild(grid);
+          }
+          const loc = item.querySelector('.brevity-location');
+          tpl.querySelector('.share-meta').textContent = loc ? loc.textContent.trim() : '';
+
+          // 生成二维码
+          const qrEl = tpl.querySelector('.share-qr');
+          qrEl.innerHTML = '';
+          const fullUrl = location.origin + item.dataset.path;
+          if (typeof QRCode === 'function') {
+            new QRCode(qrEl, { text: fullUrl, width: 90, height: 90, correctLevel: 0 });
+          }
+
+          // 渲染截图
+          ensureHtml2Canvas().then(() => {
+            return html2canvas(tpl.querySelector('.share-card'), {
+              backgroundColor: null,
+              scale: 2,
+              useCORS: true,
+              allowTaint: false,
+              logging: false
+            });
+          }).then(canvas => {
+            const dataUrl = canvas.toDataURL('image/png');
+            imgEl.src = dataUrl;
+            saveLink.href = dataUrl;
+            saveLink.download = 'moments-' + (item.dataset.id || 'share') + '.png';
+            loading.setAttribute('hidden', '');
+            result.removeAttribute('hidden');
+          }).catch(err => {
+            console.error('[brevity-share] render failed:', err);
+            loading.innerHTML = '<i class="solitude fas fa-circle-exclamation"></i><span>生成失败：' + (err.message || '未知错误') + '</span>';
+          });
+        };
+
+        window.closeBrevityShareModal = function () {
+          const modal = document.getElementById('brevityShareModal');
+          modal.setAttribute('hidden', '');
         };
       })();

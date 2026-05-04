@@ -315,7 +315,13 @@ if hexo-config('brevity.enable')
       i
         font-size .68rem
 
-    .brevity-jump
+    .brevity-actions
+      display inline-flex
+      align-items center
+      gap .25rem
+
+    .brevity-jump,
+    .brevity-share
       display inline-flex
       align-items center
       gap .35rem
@@ -333,12 +339,13 @@ if hexo-config('brevity.enable')
         background var(--efu-gray-op)
         color var(--efu-fontcolor)
 
+      i
+        font-size .82rem
+
+    .brevity-jump
       &.is-active
         background var(--efu-main)
         color var(--efu-white)
-
-      i
-        font-size .82rem
 
       .brevity-comment-count:empty
         display none
@@ -456,3 +463,252 @@ if hexo-config('brevity.enable')
     margin-top 1.5rem
     font-size .8rem
     color var(--efu-secondtext)
+
+  // ============== 分享卡片模板（截图源） ==============
+  // 隐藏在视口外，html2canvas 截图时仍能正确渲染
+  #brevityShareTemplate
+    position fixed
+    left -99999px
+    top 0
+    z-index -1
+    pointer-events none
+
+    .share-card
+      width 720px
+      box-sizing border-box
+      padding 36px 40px
+      background #1c1f24
+      color #e8eaed
+      font-family -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif
+      line-height 1.6
+
+    .share-brand
+      display flex
+      align-items center
+      gap 10px
+      margin-bottom 24px
+
+      .share-logo
+        width 28px
+        height 28px
+        border-radius 6px
+        object-fit cover
+
+      .share-blogname
+        font-size 17px
+        font-weight 600
+        letter-spacing .02em
+
+    .share-author-row
+      display flex
+      align-items center
+      gap 14px
+      margin-bottom 20px
+
+      .share-avatar
+        width 56px
+        height 56px
+        border-radius 12px
+        object-fit cover
+
+      .share-author-info
+        display flex
+        flex-direction column
+        gap 4px
+
+      .share-name
+        font-size 18px
+        font-weight 600
+        color #6b88ff
+
+      .share-date
+        font-size 13px
+        color #9aa0a6
+
+    .share-divider
+      height 1px
+      background rgba(255,255,255,.08)
+      margin 16px 0
+
+    .share-content
+      .share-text
+        margin 0 0 14px 0
+        font-size 17px
+        line-height 1.75
+        white-space pre-wrap
+        word-break break-word
+        color #e8eaed
+
+      .share-images
+        display grid
+        gap 6px
+        margin-top 8px
+
+        img
+          width 100%
+          aspect-ratio 1 / 1
+          object-fit cover
+          border-radius 8px
+          display block
+
+        &.g1
+          grid-template-columns 1fr
+          max-width 480px
+
+          img
+            aspect-ratio auto
+            max-height 480px
+            object-fit cover
+
+        &.g2
+          grid-template-columns repeat(2, 1fr)
+          max-width 480px
+
+        &.g4
+          grid-template-columns repeat(2, 1fr)
+          max-width 480px
+
+        &.g9
+          grid-template-columns repeat(3, 1fr)
+
+    .share-footer
+      .share-meta
+        font-size 13px
+        color #9aa0a6
+        margin-bottom 16px
+        min-height 1em
+
+      .share-meta:empty
+        display none
+
+      .share-qr-row
+        display flex
+        align-items center
+        gap 16px
+
+        .share-qr
+          width 90px
+          height 90px
+          background #fff
+          padding 6px
+          border-radius 8px
+          flex-shrink 0
+
+          canvas, img
+            width 100% !important
+            height 100% !important
+            display block
+
+        .share-qr-desc
+          display flex
+          flex-direction column
+          gap 6px
+          font-size 14px
+          color #c3c7cc
+
+          .share-qr-domain
+            color #6b88ff
+            font-weight 600
+
+  // ============== 分享预览模态框 ==============
+  #brevityShareModal
+    position fixed
+    inset 0
+    z-index 9999
+    display flex
+    align-items center
+    justify-content center
+
+    &[hidden]
+      display none
+
+    .brevity-share-mask
+      position absolute
+      inset 0
+      background rgba(0, 0, 0, .65)
+      backdrop-filter blur(4px)
+      -webkit-backdrop-filter blur(4px)
+
+    .brevity-share-window
+      position relative
+      max-width 90vw
+      max-height 92vh
+      padding 1.2rem
+      background var(--efu-card-bg)
+      border var(--style-border-always)
+      border-radius 16px
+      box-shadow 0 12px 40px rgba(0, 0, 0, .45)
+      display flex
+      flex-direction column
+      align-items center
+      gap 1rem
+      overflow auto
+
+    .brevity-share-loading
+      display flex
+      flex-direction column
+      align-items center
+      gap 1rem
+      padding 3rem 2rem
+      color var(--efu-secondtext)
+      font-size .9rem
+
+      i
+        font-size 2rem
+        color var(--efu-main)
+
+      &[hidden]
+        display none
+
+    .brevity-share-result
+      display flex
+      flex-direction column
+      align-items center
+      gap 1rem
+
+      &[hidden]
+        display none
+
+    .brevity-share-img
+      max-width 360px
+      max-height 75vh
+      width auto
+      height auto
+      border-radius 12px
+      box-shadow 0 6px 24px rgba(0, 0, 0, .35)
+
+    .brevity-share-tips
+      font-size .78rem
+      color var(--efu-secondtext)
+      text-align center
+
+    .brevity-share-actions
+      display flex
+      gap .8rem
+
+      .brevity-share-save,
+      .brevity-share-close
+        display inline-flex
+        align-items center
+        padding .55rem 1.4rem
+        border-radius 999px
+        font-size .85rem
+        font-weight 500
+        cursor pointer
+        transition .2s
+        border none
+        text-decoration none
+
+      .brevity-share-save
+        background var(--efu-main)
+        color #fff
+
+        &:hover
+          opacity .85
+
+      .brevity-share-close
+        background var(--efu-gray-op)
+        color var(--efu-fontcolor)
+
+        &:hover
+          background var(--efu-secondbg)
