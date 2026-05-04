@@ -1,51 +1,73 @@
-//- 分类页 — 双栏：左侧分类树 / 右侧文章列表
-//- 数据来源：scripts/categories-pages.js 注入的 page.category_*
+//- 分类页 — 双栏 + 客户端过滤
 - var tree = page.category_tree || []
 - var chain = page.category_chain || []
 - var current = page.category_node
 - var posts = page.category_posts || []
 - var total = page.category_total || 0
-
-//- 把"祖先链"摊成 id 集合，用于判断节点是否在当前路径上
 - var chainIds = chain.map(function(c){ return c.id })
+- var totalAll = site.posts.length
+
+//- 把"祖先链"摊成一个映射 { id: [...names] }，给客户端 JS 用于面包屑切换
+- var chainMap = {}
+- function buildChainMap(node, parentChain) {
+-   var thisChain = parentChain.concat([{ id: node.id, name: node.name, path: node.path }])
+-   chainMap[node.id] = thisChain
+-   if (node.children) node.children.forEach(function(child){ buildChainMap(child, thisChain) })
+- }
+- tree.forEach(function(root){ buildChainMap(root, []) })
 
 mixin renderTreeNode(node, depth)
   - var inChain = chainIds.indexOf(node.id) !== -1
   - var isCurrent = current && current.id === node.id
-  - var cls = ['cat-tree-link']
-  - if (isCurrent) cls.push('is-current')
-  - if (inChain && !isCurrent) cls.push('is-ancestor')
-  a(href=url_for(node.path), class=cls.join(' '), style='padding-left:' + (0.85 + depth * 1.1) + 'rem')
-    span.cat-tree-name= node.name
-    span.cat-tree-count= node.totalLength
-  if inChain && node.children && node.children.length
-    each child in node.children
-      +renderTreeNode(child, depth + 1)
+  - var itemCls = []
+  - if (inChain) itemCls.push('is-expanded')
+  - if (isCurrent) itemCls.push('is-current-item')
+  - var linkCls = ['cat-tree-link']
+  - if (isCurrent) linkCls.push('is-current')
+  - else if (inChain) linkCls.push('is-ancestor')
+  li(class=itemCls.join(' '))
+    a(href=url_for(node.path),
+      class=linkCls.join(' '),
+      data-cat-path=node.path,
+      data-cat-id=node.id,
+      data-cat-name=node.name,
+      style='padding-left:' + (0.85 + depth * 1.1) + 'rem')
+      span.cat-tree-name= node.name
+      span.cat-tree-count= node.totalLength
+    if node.children && node.children.length
+      ul.cat-tree-children
+        each child in node.children
+          +renderTreeNode(child, depth + 1)
 
 #categories-page
-  //- 左：分类树
+  //- 顶部全宽 header
+  header.cat-page-header
+    nav.cat-breadcrumb
+      a.cat-bc-link(href=url_for('categories/'), data-cat-path='') 全部分类
+      each c in chain
+        span.cat-bc-sep ›
+        a.cat-bc-link(href=url_for(c.path), data-cat-path=c.path)= c.name
+    h1.cat-title= current ? current.name : '全部分类'
+    p.cat-meta 共 <span class="cat-meta-count">#{total}</span> 篇文章
+
+  //- 左：分类树（始终渲染整树）
   aside.cat-sidebar
     .cat-sidebar-header= __('page.category')
-    a.cat-tree-link.cat-tree-all(href=url_for('categories/'), class=(!current ? 'is-current' : ''))
-      i.solitude.fas.fa-list
-      span.cat-tree-name 全部
-      span.cat-tree-count= site.posts.length
-    .cat-tree-divider
-    each root in tree
-      +renderTreeNode(root, 0)
+    ul.cat-tree-root
+      li(class=current ? '' : 'is-current-item')
+        a.cat-tree-link.cat-tree-all(href=url_for('categories/'),
+          data-cat-path='',
+          data-cat-name='全部',
+          class=(!current ? 'is-current' : ''))
+          i.solitude.fas.fa-list
+          span.cat-tree-name 全部
+          span.cat-tree-count= totalAll
+      .cat-tree-divider
+      each root in tree
+        +renderTreeNode(root, 0)
 
   //- 右：文章列表
   main.cat-main
-    nav.cat-breadcrumb
-      a(href=url_for('categories/')) 全部分类
-      each c in chain
-        span.cat-bc-sep ›
-        a(href=url_for(c.path))= c.name
-
-    header.cat-header
-      h1.cat-title= current ? current.name : '全部分类'
-      p.cat-meta 共 #{total} 篇文章
-
     if posts.length === 0
       .cat-empty
         i.solitude.fas.fa-inbox
@@ -56,7 +78,18 @@ mixin renderTreeNode(node, depth)
           - var cats = (post.categories && post.categories.toArray) ? post.categories.toArray() : []
           - var tags = (post.tags && post.tags.toArray) ? post.tags.toArray() : []
           - var coverSrc = post.cover || url_for('/img/default.avif')
-          li.cat-post-row
+          //- 计算这篇文章在哪些分类路径下（含祖先）
+          - var paths = ['']
+          - cats.forEach(function(cat){
+          -   var p = cat.path
+          -   while (p && p !== 'categories/' && p.indexOf('categories/') === 0) {
+          -     if (paths.indexOf(p) === -1) paths.push(p)
+          -     var parts = p.replace(/\/$/, '').split('/')
+          -     parts.pop()
+          -     p = parts.length > 1 ? parts.join('/') + '/' : ''
+          -   }
+          - })
+          li.cat-post-row(data-cat-paths=paths.join(' '))
             a.cat-post-link(href=url_for(post.path))
               .cat-post-cover
                 img(src=coverSrc, alt=post.title, loading='lazy', onerror=`this.src='${url_for('/img/default.avif')}'`)
@@ -74,3 +107,102 @@ mixin renderTreeNode(node, depth)
                       span.cat-post-tag= '#' + tag.name
                 time.cat-post-date(datetime=moment(post.date).format())
                   = moment(post.date).format('YYYY-MM-DD')
+
+  script.
+    (function () {
+      const root = document.getElementById('categories-page');
+      if (!root) return;
+      const chainMap = !{JSON.stringify(chainMap)};
+
+      const links = root.querySelectorAll('.cat-tree-link');
+      const allItems = root.querySelectorAll('.cat-sidebar li');
+      const titleEl = root.querySelector('.cat-title');
+      const metaCountEl = root.querySelector('.cat-meta-count');
+      const breadcrumbEl = root.querySelector('.cat-breadcrumb');
+
+      function applyState(catPath, catId, catName) {
+        // 1. sidebar：清掉所有状态再按当前路径加上
+        allItems.forEach(it => it.classList.remove('is-expanded', 'is-current-item'));
+        links.forEach(l => l.classList.remove('is-current', 'is-ancestor'));
+
+        const targetLink = catPath
+          ? root.querySelector('.cat-tree-link[data-cat-path="' + catPath + '"]')
+          : root.querySelector('.cat-tree-all');
+        if (targetLink) {
+          targetLink.classList.add('is-current');
+          targetLink.closest('li').classList.add('is-current-item');
+          // 沿祖先链点亮 + 展开
+          let li = targetLink.closest('li').parentElement.closest('li');
+          while (li) {
+            li.classList.add('is-expanded');
+            const lk = li.querySelector(':scope > .cat-tree-link');
+            if (lk) lk.classList.add('is-ancestor');
+            li = li.parentElement.closest('li');
+          }
+          targetLink.closest('li').classList.add('is-expanded');
+        }
+
+        // 2. 过滤文章
+        const rows = root.querySelectorAll('.cat-post-row');
+        let visibleCount = 0;
+        rows.forEach(row => {
+          const paths = (row.dataset.catPaths || '').split(' ');
+          const visible = !catPath || paths.indexOf(catPath) !== -1;
+          row.classList.toggle('is-hidden', !visible);
+          if (visible) visibleCount++;
+        });
+
+        // 3. 标题 / 计数
+        if (titleEl) titleEl.textContent = catName || '全部分类';
+        if (metaCountEl) metaCountEl.textContent = visibleCount;
+
+        // 4. 面包屑
+        if (breadcrumbEl) {
+          const html = ['<a class="cat-bc-link" href="' + (location.pathname.split('/categories/')[0] || '') + '/categories/" data-cat-path="">全部分类</a>'];
+          if (catId && chainMap[catId]) {
+            chainMap[catId].forEach(node => {
+              html.push('<span class="cat-bc-sep">›</span>');
+              html.push('<a class="cat-bc-link" href="/' + node.path + '" data-cat-path="' + node.path + '">' + node.name + '</a>');
+            });
+          }
+          breadcrumbEl.innerHTML = html.join('');
+          // 重新绑定点击
+          breadcrumbEl.querySelectorAll('.cat-bc-link').forEach(bindLink);
+        }
+
+        // 5. 用 fade 动画给文章列表加点感觉
+        const list = root.querySelector('.cat-post-list');
+        if (list) {
+          list.classList.remove('is-fading-in');
+          void list.offsetWidth;
+          list.classList.add('is-fading-in');
+        }
+      }
+
+      function bindLink(link) {
+        if (link.dataset.catBound) return;
+        link.dataset.catBound = '1';
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          const catPath = link.dataset.catPath || '';
+          const catId = link.dataset.catId || '';
+          const catName = link.dataset.catName || '';
+          history.pushState({ catPath, catId, catName }, '', link.getAttribute('href'));
+          applyState(catPath, catId, catName);
+        });
+      }
+
+      links.forEach(bindLink);
+      breadcrumbEl && breadcrumbEl.querySelectorAll('.cat-bc-link').forEach(bindLink);
+
+      window.addEventListener('popstate', (e) => {
+        const st = e.state;
+        if (st && typeof st.catPath !== 'undefined') {
+          applyState(st.catPath, st.catId || '', st.catName || '');
+        } else {
+          // 回到 /categories/
+          applyState('', '', '');
+        }
+      });
+    })();

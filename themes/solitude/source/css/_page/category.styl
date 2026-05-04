@@ -1,20 +1,69 @@
 // ============================================================
-// 分类页 — 双栏：左侧分类树 / 右侧文章列表
+// 分类页 — 顶部 header 全宽 + 双栏（左树 / 右文章）
 // ============================================================
 
 #categories-page
   display grid
   grid-template-columns 220px 1fr
-  gap 1.5rem
+  grid-template-areas \
+    'header header' \
+    'sidebar main'
+  gap 1.2rem 1.5rem
   width 100%
   align-items start
 
   +maxWidth768()
     grid-template-columns 1fr
+    grid-template-areas \
+      'header' \
+      'sidebar' \
+      'main'
     gap 1rem
 
-  // ---------- 左：分类树侧栏 ----------
+  // ---------- 顶部全宽 header ----------
+  .cat-page-header
+    grid-area header
+    padding-bottom .9rem
+    border-bottom 1px dashed var(--efu-theme-op)
+
+  .cat-breadcrumb
+    display flex
+    align-items center
+    gap .35rem
+    font-size .8rem
+    color var(--efu-secondtext)
+    margin-bottom .5rem
+    flex-wrap wrap
+
+    .cat-bc-link
+      color var(--efu-secondtext)
+      text-decoration none
+      transition color .2s
+
+      &:hover
+        color var(--efu-main)
+
+    .cat-bc-sep
+      opacity .5
+
+  .cat-title
+    margin 0 0 .35rem
+    font-size 1.6rem
+    font-weight 700
+    color var(--efu-fontcolor)
+
+  .cat-meta
+    margin 0
+    font-size .85rem
+    color var(--efu-secondtext)
+
+  .cat-meta-count
+    color var(--efu-main)
+    font-weight 600
+
+  // ---------- 左：分类树 ----------
   .cat-sidebar
+    grid-area sidebar
     position sticky
     top 5rem
     background var(--efu-card-bg)
@@ -35,6 +84,28 @@
     letter-spacing .1em
     text-transform uppercase
 
+  .cat-sidebar ul
+    list-style none
+    padding 0
+    margin 0
+
+  .cat-tree-children
+    display none
+    overflow hidden
+
+  // 当前路径上的祖先节点：展开子树
+  .cat-sidebar li.is-expanded > .cat-tree-children
+    display block
+    animation cat-tree-slide .25s ease-out
+
+  @keyframes cat-tree-slide
+    from
+      opacity 0
+      transform translateY(-4px)
+    to
+      opacity 1
+      transform translateY(0)
+
   .cat-tree-link
     display flex
     align-items center
@@ -45,6 +116,7 @@
     font-size .9rem
     text-decoration none
     transition background .2s, color .2s
+    cursor pointer
 
     &:hover
       background var(--efu-gray-op)
@@ -82,48 +154,13 @@
 
   .cat-tree-divider
     height 1px
-    background var(--style-border-always-color, rgba(125, 125, 125, .15))
+    background rgba(125, 125, 125, .15)
     margin .55rem .6rem
 
   // ---------- 右：主内容区 ----------
   .cat-main
+    grid-area main
     min-width 0
-
-  .cat-breadcrumb
-    display flex
-    align-items center
-    gap .35rem
-    font-size .8rem
-    color var(--efu-secondtext)
-    margin-bottom .7rem
-    flex-wrap wrap
-
-    a
-      color var(--efu-secondtext)
-      text-decoration none
-      transition color .2s
-
-      &:hover
-        color var(--efu-main)
-
-    .cat-bc-sep
-      opacity .5
-
-  .cat-header
-    margin-bottom 1.2rem
-    padding-bottom .9rem
-    border-bottom 1px dashed var(--efu-theme-op)
-
-  .cat-title
-    margin 0 0 .35rem
-    font-size 1.6rem
-    font-weight 700
-    color var(--efu-fontcolor)
-
-  .cat-meta
-    margin 0
-    font-size .85rem
-    color var(--efu-secondtext)
 
   .cat-empty
     text-align center
@@ -149,6 +186,17 @@
     flex-direction column
     gap .8rem
 
+  .cat-post-list.is-fading-in .cat-post-row:not(.is-hidden)
+    animation cat-post-fadein .35s ease-out
+
+  @keyframes cat-post-fadein
+    from
+      opacity 0
+      transform translateY(6px)
+    to
+      opacity 1
+      transform translateY(0)
+
   .cat-post-row
     background var(--efu-card-bg)
     border var(--style-border-always)
@@ -159,6 +207,9 @@
     &:hover
       border var(--style-border-hover)
       box-shadow var(--efu-shadow-border)
+
+    &.is-hidden
+      display none
 
   .cat-post-link
     display flex
