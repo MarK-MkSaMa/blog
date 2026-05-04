@@ -888,7 +888,7 @@ giscus:
 # Search
 search:
   enable: true
-  type: algolia # local / algolia / docsearch
+  type: local # local / algolia / docsearch
   tags:
     # - Solitude
     # - Hexo

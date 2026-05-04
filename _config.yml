@@ -103,22 +103,6 @@ theme: solitude
 deploy:
   type: ''
 
-algolia:
-  appId: "JARND9NYEL"
-  apiKey: "654a43b3f16544f048a738242a1e7bf2"
-  adminApiKey: "2e8577f89cb999564dfd3d1ec058f152"
-  chunkSize: 5000
-  indexName: "my-hexo-blog"
-  fields:
-    - content:strip:truncate,0,500
-    - excerpt:strip
-    - gallery
-    - permalink
-    - photos
-    - slug
-    - tags
-    - title
-
 abbrlink:
   alg: crc32
   rep: hex
