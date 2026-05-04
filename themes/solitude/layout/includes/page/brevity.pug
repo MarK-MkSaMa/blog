@@ -1,8 +1,10 @@
 include ../widgets/page/banner
 if theme.brevity.enable
   - var feed = site.data.brevity || []
-  - var stripCount = theme.brevity.strip
-  - var sliced = (stripCount === -1) ? feed : feed.slice(0, stripCount)
+  - var perPage = (theme.brevity.strip > 0) ? theme.brevity.strip : 30
+  - var totalPages = Math.max(1, Math.ceil(feed.length / perPage))
+  - var currentPage = page.brevity_page || 1
+  - var sliced = page.brevity_items || feed.slice((currentPage - 1) * perPage, currentPage * perPage)
   - var envId = theme.twikoo.envId
   - var region = theme.twikoo.region || ''
   - var twikooOption = theme.twikoo.option || {}
@@ -17,7 +19,8 @@ if theme.brevity.enable
       section.brevity-list
         each item in sliced
           - var permalink = url_for('essay/' + item.id + '/')
-          article.brevity-item(data-id=item.id data-path=permalink)
+          - var anchorId = 'brevity-' + item.id
+          article.brevity-item(id=anchorId data-id=item.id data-path=permalink)
             header.brevity-header
               img.brevity-avatar(src=theme.aside.my_card.author.img alt=config.author)
               span.brevity-author= config.author
@@ -67,11 +70,28 @@ if theme.brevity.enable
                   span.brevity-comment-count(data-path=permalink)
 
             - var hostId = 'twikoo-' + item.id
-            .brevity-comments(hidden)
+            .brevity-comments.is-empty(hidden)
               .brevity-comment-host(id=hostId)
 
-      if stripCount !== -1 && feed.length > stripCount
-        #bber-tips= _p('essay.tip1').replace('#{count}', stripCount)
+      if totalPages > 1
+        - var basePath = url_for('essay/')
+        - var pageNums = []
+        - for (var n = 1; n <= totalPages; n++) pageNums.push(n)
+        nav.brevity-pagination
+          if currentPage > 1
+            - var prevHref = (currentPage - 1 === 1) ? basePath : (basePath + 'page/' + (currentPage - 1) + '/')
+            a.brevity-page-link.brevity-page-arrow(href=prevHref aria-label='上一页')
+              i.solitude.fas.fa-chevron-left
+          each n in pageNums
+            if n === currentPage
+              span.brevity-page-link.is-current= n
+            else
+              - var href = (n === 1) ? basePath : (basePath + 'page/' + n + '/')
+              a.brevity-page-link(href=href)= n
+          if currentPage < totalPages
+            - var nextHref = basePath + 'page/' + (currentPage + 1) + '/'
+            a.brevity-page-link.brevity-page-arrow(href=nextHref aria-label='下一页')
+              i.solitude.fas.fa-chevron-right
 
     //- 分享卡片模板（隐藏，js 填数据后用 html2canvas 截图）
     #brevityShareTemplate(aria-hidden='true')
@@ -152,10 +172,16 @@ if theme.brevity.enable
               envId: ENV_ID,
               region: REGION,
               path: path,
-              onCommentLoaded: () => stripPowerBy(wrap)
+              onCommentLoaded: () => {
+                stripPowerBy(wrap);
+                markEmptyState(wrap);
+              }
             }, EXTRA));
             // 多次尝试，应付 Twikoo 异步插入
-            [200, 800, 2000].forEach(t => setTimeout(() => stripPowerBy(wrap), t));
+            [200, 800, 2000].forEach(t => setTimeout(() => {
+              stripPowerBy(wrap);
+              markEmptyState(wrap);
+            }, t));
           });
         }
 
@@ -163,6 +189,13 @@ if theme.brevity.enable
         function stripPowerBy(wrap) {
           if (!wrap) return;
           wrap.querySelectorAll('.tk-footer').forEach(el => el.remove());
+        }
+
+        // 没评论时给 wrap 加 .is-empty，CSS 配合隐藏空背景
+        function markEmptyState(wrap) {
+          if (!wrap) return;
+          const has = wrap.querySelectorAll('.tk-comment').length > 0;
+          wrap.classList.toggle('is-empty', !has);
         }
 
         // 进入视口时懒加载 Twikoo
@@ -243,10 +276,11 @@ if theme.brevity.enable
           const loc = item.querySelector('.brevity-location');
           tpl.querySelector('.share-meta').textContent = loc ? loc.textContent.trim() : '';
 
-          // 生成二维码
+          // 生成二维码：跳到 /essay/ 列表页对应卡片的锚点
           const qrEl = tpl.querySelector('.share-qr');
           qrEl.innerHTML = '';
-          const fullUrl = location.origin + item.dataset.path;
+          const essayBase = '!{url_for("essay/")}';
+          const fullUrl = location.origin + essayBase + '#brevity-' + item.dataset.id;
           if (typeof QRCode === 'function') {
             new QRCode(qrEl, { text: fullUrl, width: 90, height: 90, correctLevel: 0 });
           }

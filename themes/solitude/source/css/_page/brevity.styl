@@ -359,6 +359,10 @@ if hexo-config('brevity.enable')
       &[hidden]
         display none
 
+      // 没评论 + 没在写评论 → 完全隐藏，避免空背景条
+      &.is-empty:not(.show-input)
+        display none
+
       .brevity-comment-host
         min-height 0
 
@@ -463,6 +467,43 @@ if hexo-config('brevity.enable')
     margin-top 1.5rem
     font-size .8rem
     color var(--efu-secondtext)
+
+  // ============== 朋友圈分页 ==============
+  .brevity-pagination
+    display flex
+    justify-content center
+    align-items center
+    gap .35rem
+    margin 1.6rem auto 0
+    flex-wrap wrap
+
+  .brevity-page-link
+    display inline-flex
+    align-items center
+    justify-content center
+    min-width 34px
+    height 34px
+    padding 0 .55rem
+    border-radius 8px
+    background var(--efu-card-bg)
+    border var(--style-border-always)
+    color var(--efu-fontcolor)
+    font-size .85rem
+    text-decoration none
+    transition border .25s, background .25s, color .25s
+
+    &:hover
+      border var(--style-border-hover)
+      color var(--efu-main)
+
+    &.is-current
+      background var(--efu-main)
+      border-color var(--efu-main)
+      color #fff
+      cursor default
+
+    &.brevity-page-arrow i
+      font-size .75rem
 
   // ============== 分享卡片模板（截图源） ==============
   // 隐藏在视口外，html2canvas 截图时仍能正确渲染
