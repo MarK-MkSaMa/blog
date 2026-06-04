@@ -35,7 +35,7 @@ if theme.brevity.enable
                   each img in item.image
                     - var src = (typeof img === 'string') ? img : img.url
                     - var alt = (typeof img === 'string') ? '图片' : (img.alt || '图片')
-                    a.brevity-image(href=src target='_blank' rel='noopener')
+                    a.brevity-image(href=src data-fancybox='brevity-' + item.id data-caption=alt data-thumb=src rel='noopener')
                       img(src=src alt=alt loading='lazy')
 
               if item.video
@@ -237,6 +237,81 @@ if theme.brevity.enable
           return utils.getScript(HTML2CANVAS_CDN);
         }
 
+        function getImageGridClass(count) {
+          if (count === 1) return 'g1';
+          if (count === 2) return 'g2';
+          if (count === 3) return 'g3';
+          if (count === 4) return 'g4';
+          return 'g9';
+        }
+
+        function waitForImages(root) {
+          const images = Array.from(root.querySelectorAll('img'));
+          return Promise.all(images.map(img => {
+            if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+            return new Promise(resolve => {
+              img.addEventListener('load', resolve, { once: true });
+              img.addEventListener('error', resolve, { once: true });
+            });
+          }));
+        }
+
+        function syncShareImageSquares(root) {
+          root.querySelectorAll('.share-images:not(.g1) .share-image').forEach(cell => {
+            const width = cell.getBoundingClientRect().width;
+            if (width > 0) cell.style.height = Math.round(width) + 'px';
+          });
+        }
+
+        function layoutShareCoverImages(root) {
+          root.querySelectorAll('.share-images:not(.g1) .share-image').forEach(cell => {
+            const img = cell.querySelector('img.share-cover');
+            if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+            const rect = cell.getBoundingClientRect();
+            const boxW = rect.width;
+            const boxH = rect.height || boxW;
+            const scale = Math.max(boxW / img.naturalWidth, boxH / img.naturalHeight);
+            const imgW = img.naturalWidth * scale;
+            const imgH = img.naturalHeight * scale;
+
+            img.style.width = imgW + 'px';
+            img.style.height = imgH + 'px';
+            img.style.left = ((boxW - imgW) / 2) + 'px';
+            img.style.top = ((boxH - imgH) / 2) + 'px';
+          });
+        }
+
+        function loadImageForCanvas(src) {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.decoding = 'async';
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = src;
+          });
+        }
+
+        function createSquareCoverThumb(src, size) {
+          return loadImageForCanvas(src).then(img => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            const side = Math.min(w, h);
+            const sx = (w - side) / 2;
+            const sy = (h - side) / 2;
+
+            canvas.width = size;
+            canvas.height = size;
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+            return canvas.toDataURL('image/jpeg', 0.92);
+          });
+        }
+
         window.shareBrevityCard = function (btn) {
           const item = btn.closest('.brevity-item');
           const tpl = document.getElementById('brevityShareTemplate');
@@ -252,6 +327,7 @@ if theme.brevity.enable
           result.setAttribute('hidden', '');
 
           // 填充模板数据
+          const imageTasks = [];
           tpl.querySelector('.share-date').textContent =
             item.querySelector('.brevity-date')?.textContent || '';
           tpl.querySelector('.share-content').innerHTML = '';
@@ -265,11 +341,34 @@ if theme.brevity.enable
           const imgs = item.querySelectorAll('.brevity-images img');
           if (imgs.length) {
             const grid = document.createElement('div');
-            grid.className = 'share-images g' + (imgs.length === 1 ? '1' : imgs.length === 2 ? '2' : imgs.length <= 4 ? '4' : '9');
+            const gridClass = getImageGridClass(imgs.length);
+            grid.className = 'share-images ' + gridClass;
             imgs.forEach(im => {
-              const clone = im.cloneNode(false);
-              clone.setAttribute('crossorigin', 'anonymous');
-              grid.appendChild(clone);
+              const src = im.currentSrc || im.dataset.lazySrc || im.src;
+              const wrap = document.createElement('div');
+              wrap.className = 'share-image';
+
+              const clone = new Image();
+              clone.crossOrigin = 'anonymous';
+              clone.decoding = 'async';
+              clone.alt = im.getAttribute('alt') || '图片';
+
+              if (gridClass === 'g1') {
+                clone.src = src;
+              } else {
+                clone.className = 'share-cover-thumb';
+                imageTasks.push(
+                  createSquareCoverThumb(src, 720)
+                    .then(dataUrl => { clone.src = dataUrl; })
+                    .catch(() => {
+                      clone.className = 'share-cover';
+                      clone.src = src;
+                    })
+                );
+              }
+
+              wrap.appendChild(clone);
+              grid.appendChild(wrap);
             });
             tpl.querySelector('.share-content').appendChild(grid);
           }
@@ -285,9 +384,14 @@ if theme.brevity.enable
             new QRCode(qrEl, { text: fullUrl, width: 90, height: 90, correctLevel: 0 });
           }
 
-          // 渲染截图
-          ensureHtml2Canvas().then(() => {
-            return html2canvas(tpl.querySelector('.share-card'), {
+          // 渲染截图：先等待隐藏模板里的图片完成加载，避免截图时尺寸/内容不稳定
+          const shareCard = tpl.querySelector('.share-card');
+          ensureHtml2Canvas().then(() => Promise.all(imageTasks)).then(() => waitForImages(shareCard)).then(() => {
+            syncShareImageSquares(shareCard);
+            layoutShareCoverImages(shareCard);
+            return new Promise(resolve => requestAnimationFrame(resolve));
+          }).then(() => {
+            return html2canvas(shareCard, {
               backgroundColor: null,
               scale: 2,
               useCORS: true,

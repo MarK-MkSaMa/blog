@@ -38,7 +38,9 @@ function loadEssays(hexo) {
   return files.map(filepath => {
     const file = path.basename(filepath);
     const id = file.replace(/\.(md|markdown)$/i, '');
-    const raw = fs.readFileSync(filepath, 'utf8');
+    const raw = fs.readFileSync(filepath, 'utf8')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n');
     const parsed = yfm.parse(raw);
     const body = (parsed._content || '').trim();
 

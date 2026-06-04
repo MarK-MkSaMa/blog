@@ -101,8 +101,8 @@ div
         sco.initbbtalk()
     if page.type === 'brevity' && theme.brevity.enable
       script.
-        GLOBAL_CONFIG.lightbox && utils.lightbox(document.querySelectorAll(".bber-content-img img"));
-        sco.changeTimeFormat(document.querySelectorAll('.bber-info-time time'))
+        GLOBAL_CONFIG.lightbox && utils.lightbox(document.querySelectorAll(".brevity-images img"));
+        sco.changeTimeFormat(document.querySelectorAll('.brevity-date'))
     if comment_js
       include ../widgets/third-party/comments/js
     if theme.mermaid

@@ -585,32 +585,56 @@ if hexo-config('brevity.enable')
         gap 6px
         margin-top 8px
 
-        img
+        .share-image
+          position relative
           width 100%
           aspect-ratio 1 / 1
-          object-fit cover
+          overflow hidden
           border-radius 8px
-          display block
+          background rgba(255, 255, 255, .06)
+
+          img.share-cover-thumb
+            display block
+            width 100%
+            height 100%
+            max-width none !important
+            max-height none !important
+
+          img.share-cover
+            position absolute
+            display block
+            max-width none !important
+            max-height none !important
+            object-fit initial
+            object-position initial
 
         &.g1
           grid-template-columns 1fr
           max-width 480px
 
-          img
+          .share-image
             aspect-ratio auto
-            max-height 480px
-            object-fit cover
+            overflow visible
+            background transparent
+
+            img:not(.share-preload)
+              display block
+              width 100%
+              height auto
+              max-height 480px
+              object-fit contain
+              border-radius 8px
 
         &.g2
           grid-template-columns repeat(2, 1fr)
           max-width 480px
 
+        &.g3, &.g9
+          grid-template-columns repeat(3, 1fr)
+
         &.g4
           grid-template-columns repeat(2, 1fr)
           max-width 480px
-
-        &.g9
-          grid-template-columns repeat(3, 1fr)
 
     .share-footer
       .share-meta
