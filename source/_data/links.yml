@@ -20,16 +20,16 @@ links:
         topimg: https://s2.loli.net/2025/01/21/RcNxQMy6mfliXtS.png
       - name: 無名の主页
         link: https://www.imsyy.top/
-        avatar: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/imsyyfavicon.ico
+        avatar: https://cloud.markskz.com/d/MarK_MkSaMa/Photo/imsyyfavicon.ico
         descr: 一个由imsyy开发的主页项目
-        topimg: https://cloud.markcup.cc:26080/d/MarK_MkSaMa/Photo/screenshot.png
+        topimg: https://cloud.markskz.com/d/MarK_MkSaMa/Photo/screenshot.png
   - class_name: 小伙伴们
     descr: 来者皆是客
     type: item
     link_list:
       - name: 周易
         link: https://blog.blockcorner.top/
-        avatar: https://cloud.markcup.cc:26080/d/zhouyi/zhouyi.png
+        avatar: https://cloud.markskz.com/d/zhouyi/zhouyi.png
         descr: 热爱捣鼓东西的好兄弟
       - name: Eric-Terminal
         link: https://blog.ericterminal.com
@@ -39,3 +39,7 @@ links:
         link: https://blogs.papership.top
         avatar: https://blogs.papership.top/favicon/avatar.png
         descr: 去走上一座山吧，走在夕阳下
+      - name: SengokuCola
+        link: https://home.nibutupaopao.top
+        avatar: https://lsky.nibutupaopao.top/i/2026/07/09/6a4fc40211f69.png
+        descr: 随着风的轨迹 在那耀眼的午后
